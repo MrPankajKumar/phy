@@ -12,6 +12,10 @@
             padding: 0%;
             box-sizing: border-box;
         }
+        body{
+            overflow: hidden;
+            background-color: blueviolet;
+        }
         #canvas{
             background-color: black;
             overflow: hidden;
@@ -26,13 +30,14 @@
     import Vector from '../lib/vector.js'
     import Ball from '../lib/ball.js'
     const c = document.getElementById('canvas');
-    let W= c.width = window.innerWidth
-    let H =c.height = window.innerHeight
+    let W= c.width = window.innerWidth/2
+    let H =c.height = window.innerHeight/2
     console.log(window.innerWidth);
     const ctx = c.getContext('2d');
     let Balls = []
     for (let i = 0; i < 50; i++) {
         let b = Ball.randomBall(ctx,'white')
+        b.vel= new Vector(10,-10);
         b.acc=new Vector()
         Balls.push(b)
         Ball.resist=1.01
@@ -43,16 +48,18 @@
     c.addEventListener('mousemove',e=>{
         Cpos=new Vector(e.offsetX-W/2,-e.offsetY+H/2,'grey')
         Ball.target=Cpos
-        // Balls.forEach(b=>b.goto=new Vector())
-        // // for origin
-        // Ball.target=new Vector() 
-
+    })
+    c.addEventListener('mouseout',e=>{
+        Ball.target=NaN;
+        Balls.forEach((b) => {
+            b.acc=new Vector();
+        });
     })
     function animate() {
         ctx.clearRect(0, 0, W, H);
-        Balls.forEach(b => {
-            // b.drawDetail(ctx)
+        Balls.forEach((b,i) => {
             b.draw(ctx)
+            b.color=`rgb(${i},${i*10},${i*20})`
         });
         setTimeout(() => {
             window.requestAnimationFrame(animate);
